@@ -21,11 +21,12 @@ import org.springframework.security.web.authentication.*;
 public class SecurityConfig {
 
     private final GithubOauth2UserService githubOauth2UserService;
-    private final AuthenticationSuccessHandler authenticationSuccessHandler;
-    private final AuthenticationFailureHandler authenticationFailureHandler;
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+    SecurityFilterChain securityFilterChain(
+            HttpSecurity httpSecurity,
+            AuthenticationSuccessHandler authenticationSuccessHandler,
+            AuthenticationFailureHandler authenticationFailureHandler) throws Exception {
         httpSecurity
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
@@ -35,7 +36,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/auth/login-url",
                                 "/oauth2/**",
-                                "login/oauth2/**",
+                                "/login/oauth2/**",
                                 "/error"
                         )
                         .permitAll()
@@ -65,7 +66,7 @@ public class SecurityConfig {
             @Value("${app.frontend-url}") String frontendUrl) {
 
         SimpleUrlAuthenticationSuccessHandler handler = new SimpleUrlAuthenticationSuccessHandler();
-        handler.setDefaultTargetUrl(frontendUrl + "/auth/callback");
+        handler.setDefaultTargetUrl("%s/auth/callback".formatted(frontendUrl));
 
         return handler;
     }
@@ -75,7 +76,7 @@ public class SecurityConfig {
             @Value("${app.frontend-url}") String frontendUrl) {
 
         SimpleUrlAuthenticationFailureHandler handler = new SimpleUrlAuthenticationFailureHandler();
-        handler.setDefaultFailureUrl(frontendUrl + "/login?error=oauth_failed");
+        handler.setDefaultFailureUrl("%s/login?error=oauth_failed".formatted(frontendUrl));
 
         return handler;
     }

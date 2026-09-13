@@ -1,0 +1,18 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: dev_pilot
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      DB_URL: jdbc:postgresql://postgres-db:5432/dev_pilot
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+    driver: local

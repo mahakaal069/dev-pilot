@@ -19,12 +19,13 @@ public class AppConfig {
 
     @Bean
     Executor indexingExecutor() {
+
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 
         executor.setCorePoolSize(2);
         executor.setMaxPoolSize(4);
         executor.setQueueCapacity(50);
-        executor.setThreadNamePrefix("index");
+        executor.setThreadNamePrefix("index-");
         executor.initialize();
 
         return executor;
